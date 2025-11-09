@@ -1,0 +1,53 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+*.tmp
+*.bak
+*.orig
+*.rej
+
+# Flutter/Dart/Pub
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+.cxx/
+.idea/
+android/.gradle/
+android/app/build/
+ios/Pods/
+ios/Flutter/Flutter.framework/
+ios/Flutter/Flutter.podspec
+ios/.symlinks/
+macos/Pods/
+macos/.symlinks/
+linux/flutter/
+windows/flutter/
+web/.dart_tool/
+coverage/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Xcode
+DerivedData/
+*.xcworkspace
+*.xcuserstate
+*.xccheckout
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/xcshareddata/**/*
+!*.xcodeproj/xcshareddata/WorkspaceSettings.xcsettings
+
+# VS Code
+.vscode/
