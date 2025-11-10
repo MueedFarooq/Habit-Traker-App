@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habit_traker/UI/Habit_Traker_Screen.dart';
 import 'package:habit_traker/UI/Login_screen.dart';
 
 void main() {
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginScreen(),
+    home: LoginScreen()
     );
   }
 }

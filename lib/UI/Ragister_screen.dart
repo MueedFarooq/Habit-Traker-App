@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:habit_traker/UI/Habit_Traker_Screen.dart';
+import 'package:habit_traker/Utils/utils.dart';
 
 import 'Login_screen.dart';
 
@@ -26,13 +28,14 @@ class _RagisterScreenState extends State<RagisterScreen> {
     'Sleep 8 Hours',
     'Eat Healthy',
     'Journal',
-    'Walk 10,000 Steps'
+    'Walk 10,000 Steps',
   ];
   @override
   void initState() {
     super.initState();
     _fetchCountries();
   }
+
   Future<void> _fetchCountries() async {
     List<String> subsetCountries = [
       'United States',
@@ -45,7 +48,7 @@ class _RagisterScreenState extends State<RagisterScreen> {
       'Japan',
       'China',
       'Brazil',
-      'South Africa'
+      'South Africa',
     ];
     setState(() {
       _countries = subsetCountries;
@@ -53,12 +56,28 @@ class _RagisterScreenState extends State<RagisterScreen> {
       _country = _countries.isNotEmpty ? _countries[0] : 'United States';
     });
   }
+
+  void _register() async {
+    final name = _nameController.text;
+    final username = _usernameController.text;
+    if (username.isEmpty || name.isEmpty) {
+      Utils().toastMassage('Please fill in all fields');
+      return;
+    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HabitTrakerScreen(username: username),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue.shade700,
-        title:const Text(
+        title: const Text(
           'Register',
           style: TextStyle(
             fontSize: 25,
@@ -79,10 +98,10 @@ class _RagisterScreenState extends State<RagisterScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: [Colors.blue.shade700, Colors.blue.shade900],
+            colors: [Colors.blue.shade700, Colors.blue.shade900],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-          )
+          ),
         ),
         child: Center(
           child: SingleChildScrollView(
@@ -92,39 +111,52 @@ class _RagisterScreenState extends State<RagisterScreen> {
               children: [
                 _buildInputField(_nameController, 'Name', Icons.person),
                 const SizedBox(height: 10),
-                _buildInputField(_usernameController, 'Username', Icons.alternate_email),
+                _buildInputField(
+                  _usernameController,
+                  'Username',
+                  Icons.alternate_email,
+                ),
                 const SizedBox(height: 10),
-                Text('Age: ${_age.round()}',
-                    style: const TextStyle(color: Colors.white, fontSize: 18)),
+                Text(
+                  'Age: ${_age.round()}',
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                ),
                 Slider(
-                    value: _age,
-                    min: 21,
-                    max: 100,
-                    divisions: 79,
-                    activeColor: Colors.blue.shade600,
-                    inactiveColor: Colors.blue.shade300,
-                    onChanged: (value){
-                  setState(() {
-                    _age = value;
-                  });
-                }
+                  value: _age,
+                  min: 21,
+                  max: 100,
+                  divisions: 79,
+                  activeColor: Colors.blue.shade600,
+                  inactiveColor: Colors.blue.shade300,
+                  onChanged: (value) {
+                    setState(() {
+                      _age = value;
+                    });
+                  },
                 ),
                 const SizedBox(height: 10),
                 _buildCountryDropdown(),
                 const SizedBox(height: 10),
-                const Text('Select Your Habits',style: TextStyle(color: Colors.white, fontSize: 18)),
+                const Text(
+                  'Select Your Habits',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,
-                  children: availableHabits.map((habit){
+                  children: availableHabits.map((habit) {
                     final isSelected = selectedHabits.contains(habit);
                     return GestureDetector(
                       onTap: null,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
-                          color:
-                          isSelected ? Colors.blue.shade600 : Colors.white,
+                          color: isSelected
+                              ? Colors.blue.shade600
+                              : Colors.white,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.blue.shade700),
                         ),
@@ -143,23 +175,27 @@ class _RagisterScreenState extends State<RagisterScreen> {
                 const SizedBox(height: 20),
                 Center(
                   child: ElevatedButton(
-                      onPressed: (){},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade600,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 80, vertical: 12
-                        )
+                    onPressed: _register,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade600,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
                       ),
-                      child: Text('Register',style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),)
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 80,
+                        vertical: 12,
+                      ),
+                    ),
+                    child: Text(
+                      'Register',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -167,7 +203,12 @@ class _RagisterScreenState extends State<RagisterScreen> {
       ),
     );
   }
-  Widget _buildInputField(TextEditingController controller,String hint,IconData icon){
+
+  Widget _buildInputField(
+    TextEditingController controller,
+    String hint,
+    IconData icon,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -179,13 +220,16 @@ class _RagisterScreenState extends State<RagisterScreen> {
           prefixIcon: Icon(icon, color: Colors.blue.shade700),
           hintText: hint,
           border: InputBorder.none,
-          contentPadding:
-          const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 15,
+          ),
         ),
       ),
     );
   }
-  Widget _buildCountryDropdown(){
+
+  Widget _buildCountryDropdown() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
@@ -193,21 +237,19 @@ class _RagisterScreenState extends State<RagisterScreen> {
         borderRadius: BorderRadius.circular(30),
       ),
       child: DropdownButton(
-          value: _country,
-          icon: Icon(Icons.arrow_drop_down, color: Colors.blue.shade700),
-          isExpanded: true,
-          underline: const SizedBox(),
-          items: _countries.map((String value){
-        return DropdownMenuItem(
-            value: value,
-            child: Text(value)
-        );
-      }).toList(),
-          onChanged: (newValue){
-        setState(() {
-          _country = newValue!;
-        });
-      }),
+        value: _country,
+        icon: Icon(Icons.arrow_drop_down, color: Colors.blue.shade700),
+        isExpanded: true,
+        underline: const SizedBox(),
+        items: _countries.map((String value) {
+          return DropdownMenuItem(value: value, child: Text(value));
+        }).toList(),
+        onChanged: (newValue) {
+          setState(() {
+            _country = newValue!;
+          });
+        },
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habit_traker/UI/Habit_Traker_Screen.dart';
 import 'package:habit_traker/UI/Ragister_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -11,6 +12,25 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  final String defaultUsername = 'testuser';
+  final String defaultPassword = 'password123';
+
+  void _login() {
+    // The login logic goes here
+    print("login func called");
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+    if (username == defaultUsername && password == defaultPassword) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HabitTrakerScreen(username: username),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,9 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: (){
-
-                  },
+                  onPressed: _login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue.shade600,
                     shape: RoundedRectangleBorder(
