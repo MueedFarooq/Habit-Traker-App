@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habit_traker/UI/add_habit_screen.dart';
 
 class HabitTrakerScreen extends StatefulWidget {
   final String username;
@@ -180,7 +181,9 @@ class _HabitTrakerScreenState extends State<HabitTrakerScreen> {
           backgroundColor: Colors.blue.shade700,
           tooltip: 'Add Habits',
           child: const Icon(Icons.add,color: Colors.white,),
-          onPressed: (){}
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>AddHabitScreen()));
+          }
       )
           : null
     );
