@@ -1,4 +1,7 @@
+import 'dart:convert' as convert;
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class AddHabitScreen extends StatefulWidget {
   const AddHabitScreen({super.key});
 
@@ -27,25 +30,16 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
     super.initState();
     _loadHabits();
   }
+  Future<void> _saveHabits() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedHabitsMap', convert.jsonEncode(selectedHabitsMap));
+    await prefs.setString('completedHabitsMap',convert. jsonEncode(completedHabitsMap));
+  }
 
   Future<void> _loadHabits() async {
-    setState(() {
-      // Hardcoded habits for demonstration
-      selectedHabitsMap = {
-        'Workout': 'FF5733', // Color in hex (e.g., Amber)
-        'Meditate': 'FF33A1',
-        'Read a Book': '33FFA1',
-        'Drink Water': '3380FF',
-        'Practice Gratitude': 'FFC300'
-      };
-      completedHabitsMap = {
-        'Wake Up Early': 'FF5733',
-        'Journal': 'DAF7A6'
-      };
-    });
-  }
-  Future<void> _saveHabits() async {
-    // This function intentionally left empty as no saving is needed
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    selectedHabitsMap = Map<String,String> .from(convert.jsonDecode(prefs.getString('selectedHabitsMap') ?? '{}'));
+    completedHabitsMap = Map<String,String>.from(convert.jsonDecode(prefs.getString('completedHabitsMap')?? '{}'));
   }
   @override
   Widget build(BuildContext context) {
@@ -118,6 +112,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                       _habitController.clear();
                       selectedColorName = 'Amber';
                       selectedColor = _habitColors[selectedColorName]!;
+                      _saveHabits();
                     });
                   }
                 },
@@ -149,6 +144,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                             setState(() {
                               selectedHabitsMap.remove(habitName);
                               completedHabitsMap.remove(habitName);
+                              _saveHabits();
                             });
                           },
                           icon: Icon(Icons.delete, color: Colors.red),

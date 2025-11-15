@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:habit_traker/UI/Habit_Traker_Screen.dart';
+import 'package:habit_traker/Utils/country_list.dart';
 import 'package:habit_traker/Utils/utils.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:math';
+import 'dart:convert' as convert;
 import 'Login_screen.dart';
 
 class RagisterScreen extends StatefulWidget {
@@ -30,33 +33,32 @@ class _RagisterScreenState extends State<RagisterScreen> {
     'Journal',
     'Walk 10,000 Steps',
   ];
+  final Map<String, Color> _habitColors = {
+    'Amber': Colors.amber,
+    'Red Accent': Colors.redAccent,
+    'Light Blue': Colors.lightBlue,
+    'Light Green': Colors.lightGreen,
+    'Purple Accent': Colors.purpleAccent,
+    'Orange': Colors.orange,
+    'Teal': Colors.teal,
+    'Deep Purple': Colors.deepPurple,
+  };
   @override
   void initState() {
     super.initState();
-    _fetchCountries();
+    _loadCountries();
   }
 
-  Future<void> _fetchCountries() async {
-    List<String> subsetCountries = [
-      'United States',
-      'Canada',
-      'United Kingdom',
-      'Australia',
-      'India',
-      'Germany',
-      'France',
-      'Japan',
-      'China',
-      'Brazil',
-      'South Africa',
-    ];
-    setState(() {
-      _countries = subsetCountries;
-      _countries.sort();
-      _country = _countries.isNotEmpty ? _countries[0] : 'United States';
-    });
+  Future<void> _loadCountries() async{
+    try{
+     List<String> countries = await fetchCountries();
+     setState(() {
+       _countries = countries;
+     });
+    }catch(e){
+      Utils().toastMassage('Error fetching countries');
+    }
   }
-
   void _register() async {
     final name = _nameController.text;
     final username = _usernameController.text;
@@ -64,12 +66,36 @@ class _RagisterScreenState extends State<RagisterScreen> {
       Utils().toastMassage('Please fill in all fields');
       return;
     }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, String> selectedHabitsMap = {};
+    final random = Random();
+    final colorKeys = _habitColors.keys.toList();
+      for(var habit in selectedHabits){
+        var randomColor =
+        _habitColors[colorKeys[random.nextInt(colorKeys.length)]]!;
+        selectedHabitsMap[habit] = randomColor.value.toRadixString(16);
+      }
+    await prefs.setString('name', name);
+    await prefs.setString('username', username);
+    await prefs.setDouble('age', _age);
+    await prefs.setString('country', _country);
+    await prefs.setString('selectedHabitsMap', convert.jsonEncode(selectedHabitsMap));
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => HabitTrakerScreen(username: username),
       ),
     );
+  }
+
+  void _toggleHabitSelection(String habit){
+    setState(() {
+      if (selectedHabits.contains(habit)) {
+        selectedHabits.remove(habit);
+      } else {
+        selectedHabits.add(habit);
+      }
+    });
   }
 
   @override
@@ -147,7 +173,7 @@ class _RagisterScreenState extends State<RagisterScreen> {
                   children: availableHabits.map((habit) {
                     final isSelected = selectedHabits.contains(habit);
                     return GestureDetector(
-                      onTap: null,
+                      onTap: ()=> _toggleHabitSelection(habit),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:habit_traker/UI/Habit_Traker_Screen.dart';
 import 'package:habit_traker/UI/Ragister_screen.dart';
+import 'package:habit_traker/Utils/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,18 +18,27 @@ class _LoginScreenState extends State<LoginScreen> {
   final String defaultUsername = 'testuser';
   final String defaultPassword = 'password123';
 
-  void _login() {
+  void _login() async{
     // The login logic goes here
     print("login func called");
     final username = _usernameController.text;
     final password = _passwordController.text;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     if (username == defaultUsername && password == defaultPassword) {
+      await prefs.setString('name', 'Test User');
+      await prefs.setString('username', 'testuser');
+      await prefs.setDouble('age', 25);
+      await prefs.setString('country', 'United States');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => HabitTrakerScreen(username: username),
         ),
       );
+    }
+    else{
+      await prefs.clear();
+      Utils().toastMassage('User name or Password was incorrect');
     }
   }
 
