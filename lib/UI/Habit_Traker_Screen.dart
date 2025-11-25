@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habit_traker/UI/ReportScreen.dart';
 import 'package:habit_traker/UI/add_habit_screen.dart';
 import 'package:habit_traker/UI/personal_info_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -119,7 +120,7 @@ class _HabitTrakerScreenState extends State<HabitTrakerScreen> {
                     builder: (context) => const AddHabitScreen(),
                   ),
                 ).then((updatedHabits) {
-                  _loadUserData(); // Reload data after returning
+                  _loadUserData();
                 });
               },
             ),
@@ -135,6 +136,11 @@ class _HabitTrakerScreenState extends State<HabitTrakerScreen> {
             ListTile(
               leading: Icon(Icons.analytics),
               title: Text('Reports'),
+              onTap: (){
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => ReportsScreen()));
+              },
             ),
             ListTile(
               leading: Icon(Icons.notifications),
