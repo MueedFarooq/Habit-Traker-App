@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habit_traker/UI/Notification_screen.dart';
 import 'package:habit_traker/UI/ReportScreen.dart';
 import 'package:habit_traker/UI/add_habit_screen.dart';
 import 'package:habit_traker/UI/personal_info_screen.dart';
@@ -145,6 +146,10 @@ class _HabitTrakerScreenState extends State<HabitTrakerScreen> {
             ListTile(
               leading: Icon(Icons.notifications),
               title: Text('Notifications'),
+              onTap: (){
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificationScreen()));
+              },
             ),
             ListTile(
               leading: Icon(Icons.logout),
