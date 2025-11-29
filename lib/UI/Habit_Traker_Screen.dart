@@ -5,7 +5,7 @@ import 'package:habit_traker/UI/add_habit_screen.dart';
 import 'package:habit_traker/UI/personal_info_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert' as convert;
-
+import 'package:habit_traker/services//local_storage.dart';
 import 'Login_screen.dart';
 
 class HabitTrakerScreen extends StatefulWidget {
@@ -19,6 +19,7 @@ class HabitTrakerScreen extends StatefulWidget {
 class _HabitTrakerScreenState extends State<HabitTrakerScreen> {
   Map<String, String> selectedHabitsMap = {};
   Map<String, String> completedHabitsMap = {};
+  LocalStorage storage = LocalStorage();
 
   String name = '';
   @override
@@ -49,28 +50,16 @@ class _HabitTrakerScreenState extends State<HabitTrakerScreen> {
   }
 
   Future<void> _loadUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var data = await storage.loadUserData(widget.username);
+
     setState(() {
-      name = prefs.getString('name') ?? widget.username;
-      selectedHabitsMap = Map<String, String>.from(
-        convert.jsonDecode(prefs.getString('selectedHabitsMap') ?? '{}'),
-      );
-      completedHabitsMap = Map<String, String>.from(
-        convert.jsonDecode(prefs.getString('completedHabitsMap') ?? '{}'),
-      );
+      name = data['name'];
+      selectedHabitsMap = Map<String, String>.from(data['selectedHabitsMap']);
+      completedHabitsMap = Map<String, String>.from(data['completedHabitsMap']);
     });
   }
-
   Future<void> _saveHabits() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      'selectedHabitsMap',
-      convert.jsonEncode(selectedHabitsMap),
-    );
-    await prefs.setString(
-      'completedHabitsMap',
-      convert.jsonEncode(completedHabitsMap),
-    );
+    await storage.saveHabits(selectedHabitsMap, completedHabitsMap);
   }
   void _signOut(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -93,6 +82,12 @@ class _HabitTrakerScreenState extends State<HabitTrakerScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Icon(Icons.home_filled,color: Colors.white,),
+          )
+        ],
         automaticallyImplyLeading: true,
       ),
       drawer: Drawer(
@@ -147,8 +142,8 @@ class _HabitTrakerScreenState extends State<HabitTrakerScreen> {
               leading: Icon(Icons.notifications),
               title: Text('Notifications'),
               onTap: (){
-                Navigator.pop(context);
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificationScreen()));
+              //   Navigator.pop(context);
+              //   Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificationScreen()));
               },
             ),
             ListTile(
