@@ -142,8 +142,8 @@ class _HabitTrakerScreenState extends State<HabitTrakerScreen> {
               leading: Icon(Icons.notifications),
               title: Text('Notifications'),
               onTap: (){
-              //   Navigator.pop(context);
-              //   Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificationScreen()));
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>NotificationScreen()));
               },
             ),
             ListTile(
